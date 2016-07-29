@@ -1,32 +1,41 @@
 import React, { Component } from 'react';
 import './App.css';
+import isValidUpca from './utils/isValidUpca'
+import removeEveryWhiteSpace from './utils/removeEveryWhiteSpace'
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      correctUcpa: [],
-      wrongUcpa: [],
+      correctUpca: [],
+      wrongUpca: [],
     };
   }
 
-  handleChange(e) {
-    function _isValidUcpa(code) {
-      return Math.random() > 0.5;
-    }
 
-    const inputUcpaCodes = e.target.value.split('\n');
-    const filteredUcpa = inputUcpaCodes.reduce((acc, code) => {
-      _isValidUcpa(code) 
-        ? acc.correctUcpa.push(code) 
-        : acc.wrongUcpa.push({code, motif: _isValidUcpa(code)});
+  /*
+    isValidUpca returns a boolean if it's valid otherwise 
+    it returns an object with the `reasons` property
+   */
+  handleChange(e) {
+    const inputUpcaCodes = e.target.value.split('\n');
+    const filteredUcpa = inputUpcaCodes.reduce((acc, code) => {
+      code = removeEveryWhiteSpace(code);
+      if (typeof isValidUpca(code) !== 'object') {
+        acc.correctUpca.push(code) 
+      } else {
+        acc.wrongUpca.push({code, reasons: isValidUpca(code)});
+      }
       return acc;
-    }, this.state);
-    
+    }, {
+      correctUpca: [],
+      wrongUpca: [],
+    });
     this.setState(filteredUcpa);
   }
 
   render() {
+    console.log(this.state);
     return (
       <div className="App">
         <form>
@@ -34,9 +43,9 @@ class App extends Component {
           <p>Please check the following</p>
         </form>
         <ul>
-          {this.state.wrongUcpa.map((ucpa) => {
-            <li>{ucpa.code}</li>
-          })}
+          {
+            this.state.wrongUpca.map((upca, index) => <li key={index}>{upca.code}</li>)
+          }
         </ul>
       </div>
     );
