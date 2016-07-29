@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import isValidUpca from './utils/isValidUpca'
-import removeEveryWhiteSpace from './utils/removeEveryWhiteSpace'
+import isValidUpca from './utils/isValidUpca';
+import removeEveryWhiteSpace from './utils/removeEveryWhiteSpace';
 
 class App extends Component {
   constructor(props) {
@@ -9,9 +9,9 @@ class App extends Component {
     this.state = {
       correctUpca: [],
       wrongUpca: [],
+      textAreaValue: ''
     };
   }
-
 
   /*
     isValidUpca returns a boolean if it's valid otherwise 
@@ -20,7 +20,7 @@ class App extends Component {
   handleChange(e) {
     const inputUpcaCodes = e.target.value.split('\n');
     const filteredUcpa = inputUpcaCodes.reduce((acc, code) => {
-      code = removeEveryWhiteSpace(code);
+      if (code === '') return acc;
       if (typeof isValidUpca(code) !== 'object') {
         acc.correctUpca.push(code) 
       } else {
@@ -31,21 +31,27 @@ class App extends Component {
       correctUpca: [],
       wrongUpca: [],
     });
-    this.setState(filteredUcpa);
+    this.setState({
+      correctUpca: filteredUcpa.correctUpca,
+      wrongUpca: filteredUcpa.wrongUpca,
+      textAreaValue: e.target.value
+    });
   }
 
   render() {
     console.log(this.state);
     return (
       <div className="App">
+        <p>Enter UPC-A codes separated by a return</p>
         <form>
-          <textarea name="" onChange={this.handleChange.bind(this)}></textarea>
-          <p>Please check the following</p>
+          <div className="highlighter">{this.state.textAreaValue}</div>
+          <textarea name="" onChange={this.handleChange.bind(this)} id="textarea"></textarea>
         </form>
+        <p>Please check the following :</p>
         <ul>
-          {
-            this.state.wrongUpca.map((upca, index) => <li key={index}>{upca.code}</li>)
-          }
+          {this.state.wrongUpca.map((upca, index) => {
+            return <li key={index}>{upca.code} {upca.reasons.map(r => <span>{r} </span>)}</li>
+          })}
         </ul>
       </div>
     );

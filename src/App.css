@@ -1,24 +1,23 @@
-.App {
-  text-align: center;
+.highlighter, #textarea {
+    width: 400px;
+    height: 300px;
+    font-size: 10px;
+    font-family: 'verdana';
 }
 
-.App-logo {
-  animation: spin infinite 20s linear;
-  height: 80px;
+.highlighter {
+    position: absolute;
+    padding: 1px;
+    margin-left: 1px;
+    color: #000;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.highlighter span {
+    background: red;
+    color: #fff;
 }
 
-.App-intro {
-  font-size: large;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+#textarea {
+    position: relative;
+    background-color: transparent;
 }
