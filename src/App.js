@@ -34,7 +34,6 @@ class App extends Component {
     this.setState({
       correctUpca: filteredUcpa.correctUpca,
       wrongUpca: filteredUcpa.wrongUpca,
-      textAreaValue: e.target.value
     });
   }
 
@@ -44,7 +43,6 @@ class App extends Component {
       <div className="App">
         <p>Enter UPC-A codes separated by a return</p>
         <form>
-          <div className="highlighter">{this.state.textAreaValue}</div>
           <textarea name="" onChange={this.handleChange.bind(this)} id="textarea"></textarea>
         </form>
         <p>Please check the following :</p>
