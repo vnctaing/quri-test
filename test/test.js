@@ -1,9 +1,10 @@
 const assert = require('chai').assert;
 const isValidUpca = require('../src/utils/isValidUpca');
+const removeEveryWhiteSpace = require('../src/utils/removeEveryWhiteSpace');
 
 describe('Utils function', function() {
   describe('isValidUpca()', function() {
-    it('should return return when the value a valid upc-a', function() {
+    it('should return true when the value a valid upc-a', function() {
       assert.equal(true, isValidUpca.default('889714000045'));
     });
 
@@ -25,11 +26,14 @@ describe('Utils function', function() {
   });
 
   describe('removeEveryWhiteSpace()', function() {
-    it('should return -1 when the value is not present', function() {
-      assert.equal(-1, [1,2,3].indexOf(5));
-      assert.equal(-1, [1,2,3].indexOf(0));
+    it('should return a string without white space', function() {
+      assert.equal('123123123', removeEveryWhiteSpace.default('       123 123 123    '));
     });
   });
+
+  describe('isCheckDigitValid()', function () {
+    it
+  })
 
 
 });
