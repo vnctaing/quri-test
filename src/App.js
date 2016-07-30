@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import isValidUpca from './utils/isValidUpca';
-import removeEveryWhiteSpace from './utils/removeEveryWhiteSpace';
+import Poll from './Poll.js';
 
 class App extends Component {
   constructor(props) {
@@ -9,7 +9,10 @@ class App extends Component {
     this.state = {
       correctUpca: [],
       wrongUpca: [],
-      textAreaValue: ''
+      textAreaValue: '',
+      stagingUpca: [],
+      textAreaValue: '',
+      html: "<b>Hello <i>World</i></b>"
     };
   }
 
@@ -37,20 +40,37 @@ class App extends Component {
     });
   }
 
+  handleClick() {
+    console.log('hey');
+  }
+
   render() {
-    console.log(this.state);
     return (
       <div className="App">
-        <p>Enter UPC-A codes separated by a return</p>
-        <form>
-          <textarea name="" onChange={this.handleChange.bind(this)} id="textarea"></textarea>
-        </form>
-        <p>Please check the following :</p>
-        <ul>
-          {this.state.wrongUpca.map((upca, index) => {
-            return <li key={index}>{upca.code} {upca.reasons.map(r => <span>{r} </span>)}</li>
-          })}
-        </ul>
+        <div className="inlineBlock">
+          { this.state.wrongUpca.length ? <p>Please check the following :</p> : ''}
+          <ul>
+            {this.state.wrongUpca.map((upca, index) => {
+              return <li key={index}>{upca.code} {upca.reasons.map(r => <span>{r} </span>)}</li>
+            })}
+          </ul>
+        </div>
+        <div className="inlineBlock">
+          <p>Check UPC-A codes separated by a return</p>
+          <div>
+            <div></div>
+          </div>
+          <form>
+            <textarea name="" onChange={this.handleChange.bind(this)} id="textarea"></textarea>
+          </form>
+          <button onClick={this.handleClick}>Add to poll valid UPCA-A</button>
+        </div>
+        <div className="inlineBlock">
+          <h4>Submitting following UPC-A codes :</h4>
+          <Poll items={this.state.stagingUpca}>
+            <button>Submit</button>
+          </Poll>
+        </div>
       </div>
     );
   }
