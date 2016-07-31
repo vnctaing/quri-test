@@ -54,7 +54,7 @@ describe('Utils function', function() {
 
 describe('React components', function() {
   describe('<App/>', function() {
-    it('should render a some html', function() {
+    it('should be rendered', function() {
       expect(
         shallow(<App />)
         .find('div.App')
@@ -95,6 +95,57 @@ describe('React components', function() {
         .to.deep.equal(['083085300265', '082184090466']);
     });
 
+    it('should give live feedback when wrong UPC-A are entered', () => {
+      const wrapper = shallow(<App />);
+      wrapper.find('textarea').simulate('change', { target: { value: 'foo\n82184090466\n123123\n889714000044' } });
+      expect(wrapper.find('.wrongUpca').children()).to.have.length(4);
+      expect(wrapper.find('.wrongUpca').childAt(0).text()).to.equal('foo UPC-A contains only numbers ');
+      expect(wrapper.find('.wrongUpca').childAt(1).text()).to.equal('82184090466 Leading zero might have been deleted ');
+      expect(wrapper.find('.wrongUpca').childAt(2).text()).to.equal("123123 It isn't a valid UPC-A code (12 characters) ");
+      expect(wrapper.find('.wrongUpca').childAt(3).text()).to.equal("889714000044 Unvalid UPC-A code. Check for mispell ");
+    });
+
+    it('should prevent adding items to <Poll> if there is no correct UPC-A entered', () => {
+      const wrapper = shallow(<App />);
+      wrapper.find('textarea').simulate('change', { target: { value: 'foo\n82184090466\n123123\n889714000044' } });
+      expect(wrapper.find('.addToPollCta').props('').disabled).to.equal(true);
+    });
+
+    it('should prevent submitting if there is no correct UPC-A entered', () => {
+      const wrapper = shallow(<App />);
+      wrapper.setState({
+        correctUpca: [],
+        wrongUpca: [],
+        stagingUpca: ['82184090466', 'abc'],
+      });
+      expect(wrapper.instance().handleSubmitStaginUpca()).to.equal('Wrong UPC-A');
+
+    });
+
+    it('should submittable if there every UPC-A entered are correct', () => {
+      const wrapper = shallow(<App />);
+      wrapper.setState({
+        correctUpca: [],
+        wrongUpca: [],
+        stagingUpca: ['889714000045'],
+      });
+      expect(wrapper.find('.submitCta').props('').disabled).to.equal(false);
+    });
+
+    // This test can not be runned, mount() doesnt work either
+    // TypeError: Cannot set property 'value' of undefined
+
+    // it('should moves items from `correctUpca` to `stagingUpca` when clicking `Add valid UPC-A to poll`', () => {
+      // const wrapper = shallow(<App />);
+      // wrapper.setState({
+      //   correctUpca: ['082184090466', '083085300265'],
+      //   wrongUpca: [{ code: '82184090466', 'reasons': ["Leading zero might have been deleted"] }],
+      //   stagingUpca: [],
+      // });
+      // wrapper.find('.addToPoll').simulate('click');
+      // expect(wrapper.state('stagingUpca'))
+      //   .to.deep.equal(['083085300265', '082184090466']);
+    // });
 
   });
 });

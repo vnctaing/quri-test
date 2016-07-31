@@ -58,22 +58,30 @@ class App extends Component {
     });
   }
 
-  handleSubmitStaginUpca(e) {
-    this.setState({isFetching: true});
-    fetch('https://iwo3uesa6c.execute-api.us-east-1.amazonaws.com/prod/products', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({list: this.state.stagingUpca})
-    })
-    .then((r) => r.json())
-    .then((json) => {
-      if (json === 'success') this.setState({stagingUpca: []})
-      this.setState({isFetching: false})
-    })
-    .catch((error)=> { console.log(error)});
+  handleSubmitStaginUpca() {
+    this.setState({ isFetching: true });
+    
+    const stagingUpcaAreValid = 
+    this.state.stagingUpca.map((code) => isValidUpca(code)) === this.state.stagingUpca;
+
+    if (stagingUpcaAreValid) {
+      fetch('https://iwo3uesa6c.execute-api.us-east-1.amazonaws.com/prod/products', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ list: this.state.stagingUpca }),
+      })
+        .then((r) => r.json())
+        .then((json) => {
+          if (json === 'success') this.setState({ stagingUpca: [] });
+          this.setState({ isFetching: false });
+        })
+        .catch((error)=> { console.log(error)});
+    } else {
+      return 'Wrong UPC-A';
+    }
   }
 
   render() {
@@ -81,7 +89,7 @@ class App extends Component {
       <div className="App">
         <div className="inlineBlock">
           { this.state.wrongUpca.length ? <p>Please check the following :</p> : ''}
-          <ul>
+          <ul className="wrongUpca">
             {this.state.wrongUpca.map((upca, index) => {
               return (
                 <li key={index}>
@@ -95,7 +103,7 @@ class App extends Component {
           <form>
             <textarea ref="codes" onChange={this.handleChange.bind(this)} id="textarea"></textarea>
           </form>
-          <button onClick={this.handleClick.bind(this)} disabled={this.state.correctUpca.length ? false : true}>
+          <button className="addToPollCta" onClick={this.handleClick.bind(this)} disabled={this.state.correctUpca.length ? false : true}>
             Add valid UPCA-A to poll({this.state.correctUpca.length})
           </button>
         </div>
@@ -104,6 +112,7 @@ class App extends Component {
           <p>{this.state.isFetching ? 'Submiting...' : ''}</p>
           <Poll items={this.state.stagingUpca} onRemove={this.onRemove.bind(this)}>
             <button type="button" 
+                    className="submitCta"
                     onClick={this.handleSubmitStaginUpca.bind(this)}
                     disabled={this.state.stagingUpca.length ? false : true}>
               Submit {this.state.stagingUpca.length} upc-a code{this.state.stagingUpca.length > 1? 's' : ''}
