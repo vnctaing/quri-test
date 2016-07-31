@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { expect, assert } from 'chai';
+import { shallow, mount, render } from 'enzyme';
 import isValidUpca from '../src/utils/isValidUpca';
 import removeEveryWhiteSpace from '../src/utils/removeEveryWhiteSpace';
 import isCheckDigitValid from '../src/utils/isCheckDigitValid';
@@ -53,7 +54,7 @@ describe('Utils function', function() {
 describe('React components', function() {
   describe('<App/>', function() {
     it('should render a textarea', function() {
-      expect(shallow(<App />).contains(<div className="App">)).to.equal(true);
+      expect(shallow(<App />).contains(<div className="App"/>)).to.equal(true);
     });
   });
 });
