@@ -92,9 +92,6 @@ class App extends Component {
         </div>
         <div className="inlineBlock">
           <p>Check UPC-A codes separated by a return</p>
-          <div>
-            <div></div>
-          </div>
           <form>
             <textarea ref="codes" onChange={this.handleChange.bind(this)} id="textarea"></textarea>
           </form>

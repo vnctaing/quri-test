@@ -5,6 +5,7 @@ import isValidUpca from '../src/utils/isValidUpca';
 import removeEveryWhiteSpace from '../src/utils/removeEveryWhiteSpace';
 import isCheckDigitValid from '../src/utils/isCheckDigitValid';
 import App from '../src/App.js'
+import Poll from '../src/Poll.js'
 
 describe('Utils function', function() {
   describe('isValidUpca()', function() {
@@ -53,8 +54,47 @@ describe('Utils function', function() {
 
 describe('React components', function() {
   describe('<App/>', function() {
-    it('should render a textarea', function() {
-      expect(shallow(<App />).contains(<div className="App"/>)).to.equal(true);
+    it('should render a some html', function() {
+      expect(
+        shallow(<App />)
+        .find('div.App')
+      )
+      .to.have.length(1);
     });
+
+    it('should render a poll for valid upc-a and a textarea', function() {
+      expect(shallow(<App />).find(Poll))
+        .to.have.length(1);
+
+      expect(shallow(<App />).find('textarea'))
+        .to.have.length(1);
+    });
+
+    it('should have an initial state with `correctUpca`, `wrongUpca`, `stagingUpca` and `isFetching`', () => {
+      const wrapper = shallow(<App />);
+      expect(wrapper.state('wrongUpca')).to.deep.equal([]);
+      expect(wrapper.state('correctUpca')).to.deep.equal([]);
+      expect(wrapper.state('stagingUpca')).to.deep.equal([]);
+      expect(wrapper.state('isFetching')).to.equal(false);
+    });
+
+    it('should push two items to `wrongUpca` if the textarea contains two wrong upc-a', () => {
+      const wrapper = shallow(<App />);
+      wrapper.find('textarea').simulate('change', { target: { value: 'foo\n82184090466' } });
+      expect(wrapper.state('wrongUpca'))
+        .to.deep.equal([
+          { code: 'foo', 'reasons': ["UPC-A contains only numbers"] },
+          { code: '82184090466', 'reasons': ["Leading zero might have been deleted"] },
+        ]);
+    });
+    
+    it('should push two items to `correctUpca` if the textarea contains two correct upc-a', () => {
+      const wrapper = shallow(<App />);
+      wrapper.find('textarea').simulate('change', { target: { value: '083085300265\n082184090466' } });
+      expect(wrapper.state('correctUpca'))
+        .to.deep.equal(['083085300265', '082184090466']);
+    });
+
+
   });
 });
