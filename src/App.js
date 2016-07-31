@@ -10,6 +10,7 @@ class App extends Component {
       correctUpca: [],
       wrongUpca: [],
       stagingUpca: [],
+      isFetching: false,
     };
   }
 
@@ -57,6 +58,24 @@ class App extends Component {
     });
   }
 
+  handleSubmitStaginUpca(e) {
+    this.setState({isFetching: true});
+    fetch('https://iwo3uesa6c.execute-api.us-east-1.amazonaws.com/prod/products', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({list: this.state.stagingUpca})
+    })
+    .then((r) => r.json())
+    .then((json) => {
+      if (json === 'success') this.setState({stagingUpca: []})
+      this.setState({isFetching: false})
+    })
+    .catch((error)=> { console.log(error)});
+  }
+
   render() {
     return (
       <div className="App">
@@ -64,7 +83,10 @@ class App extends Component {
           { this.state.wrongUpca.length ? <p>Please check the following :</p> : ''}
           <ul>
             {this.state.wrongUpca.map((upca, index) => {
-              return <li key={index}>{upca.code} {upca.reasons.map(r => <span>{r} </span>)}</li>
+              return (
+                <li key={index}>
+                      {upca.code} {upca.reasons.map(r => <span>{r} </span>)}
+                </li>);
             })}
           </ul>
         </div>
@@ -76,12 +98,19 @@ class App extends Component {
           <form>
             <textarea ref="codes" onChange={this.handleChange.bind(this)} id="textarea"></textarea>
           </form>
-          <button onClick={this.handleClick.bind(this)}>Add valid UPCA-A to poll({this.state.correctUpca.length})</button>
+          <button onClick={this.handleClick.bind(this)} disabled={this.state.correctUpca.length ? false : true}>
+            Add valid UPCA-A to poll({this.state.correctUpca.length})
+          </button>
         </div>
         <div className="inlineBlock">
           <h4>Submitting following UPC-A codes :</h4>
+          <p>{this.state.isFetching ? 'Submiting...' : ''}</p>
           <Poll items={this.state.stagingUpca} onRemove={this.onRemove.bind(this)}>
-            <button>Submit</button>
+            <button type="button" 
+                    onClick={this.handleSubmitStaginUpca.bind(this)}
+                    disabled={this.state.stagingUpca.length ? false : true}>
+              Submit {this.state.stagingUpca.length} upc-a code{this.state.stagingUpca.length > 1? 's' : ''}
+            </button>
           </Poll>
         </div>
       </div>
