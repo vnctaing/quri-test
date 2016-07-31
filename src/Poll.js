@@ -4,7 +4,7 @@ import PollItem from './PollItem.js';
 const Poll = (props) => {
   return (
     <div className="poll">
-      {props.items.map((item, index) => <PollItem item={item} />)}
+      {props.items.map((item, index) => <PollItem key={index} item={item} />)}
       {props.children}
     </div>
   )

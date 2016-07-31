@@ -9,10 +9,7 @@ class App extends Component {
     this.state = {
       correctUpca: [],
       wrongUpca: [],
-      textAreaValue: '',
       stagingUpca: [],
-      textAreaValue: '',
-      html: "<b>Hello <i>World</i></b>"
     };
   }
 
@@ -41,7 +38,12 @@ class App extends Component {
   }
 
   handleClick() {
-    console.log('hey');
+    this.refs.codes.value = "";
+    this.refs.codes.value = this.state.wrongUpca.map((upca) => upca.code).join('\n');
+    this.setState({
+      stagingUpca: [...this.state.stagingUpca, ...this.state.correctUpca],
+      correctUpca: [],
+    });
   }
 
   render() {
@@ -61,9 +63,9 @@ class App extends Component {
             <div></div>
           </div>
           <form>
-            <textarea name="" onChange={this.handleChange.bind(this)} id="textarea"></textarea>
+            <textarea ref="codes" onChange={this.handleChange.bind(this)} id="textarea"></textarea>
           </form>
-          <button onClick={this.handleClick}>Add to poll valid UPCA-A</button>
+          <button onClick={this.handleClick.bind(this)}>Add valid UPCA-A to poll({this.state.correctUpca.length})</button>
         </div>
         <div className="inlineBlock">
           <h4>Submitting following UPC-A codes :</h4>

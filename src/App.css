@@ -1,25 +1,9 @@
-.highlighter, #textarea {
-    width: 400px;
-    height: 300px;
-    font-size: 10px;
-    font-family: 'verdana';
-}
-
-.highlighter {
-    position: absolute;
-    padding: 1px;
-    margin-left: 1px;
-    color: #000;
-}
-
-.highlighter span {
-    background: red;
-    color: #fff;
-}
-
 #textarea {
     position: relative;
     background-color: transparent;
+    width: 400px;
+    height: 300px;
+    font-size: 14px;
 }
 
 .App {
