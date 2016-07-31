@@ -11,7 +11,7 @@ const Poll = (props) => {
       {props.items.map((item, index) => <PollItem key={index} item={item} deletePollItem={removeItem.bind(item)} />)}
       {props.children}
     </div>
-  )
-}
+  );
+};
 
 export default Poll;
