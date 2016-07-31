@@ -41,8 +41,19 @@ class App extends Component {
     this.refs.codes.value = "";
     this.refs.codes.value = this.state.wrongUpca.map((upca) => upca.code).join('\n');
     this.setState({
-      stagingUpca: [...this.state.stagingUpca, ...this.state.correctUpca],
+      // new Set (es6 feature), let you unify and de-duplicate items
+      stagingUpca: [ ...new Set( [].concat( ...this.state.stagingUpca, ...this.state.correctUpca) ) ],
       correctUpca: [],
+    });
+  }
+
+  onRemove(item) {
+    const itemIndex = this.state.stagingUpca.indexOf(item);
+    this.setState({
+      stagingUpca: [
+        ...this.state.stagingUpca.slice(0, itemIndex), 
+        ...this.state.stagingUpca.slice(itemIndex + 1, this.state.stagingUpca.length)
+      ]
     });
   }
 
@@ -69,7 +80,7 @@ class App extends Component {
         </div>
         <div className="inlineBlock">
           <h4>Submitting following UPC-A codes :</h4>
-          <Poll items={this.state.stagingUpca}>
+          <Poll items={this.state.stagingUpca} onRemove={this.onRemove.bind(this)}>
             <button>Submit</button>
           </Poll>
         </div>
