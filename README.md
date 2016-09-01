@@ -1,4 +1,5 @@
-This is a form, that enables mass import upc-a codes. 
+I had to create a small form that enabled mass import upc-a codes. 
+
 
 ## Get started
 
